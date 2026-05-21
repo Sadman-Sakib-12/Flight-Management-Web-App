@@ -35,18 +35,27 @@ export default function SeatMapClient({
 }: SeatMapClientProps) {
   const router = useRouter();
   const { setSelectedSeat, setOptimisticSeatId, optimisticSeatId, selectedSeat } = useFlightStore();
-  const { session } = useUserStore();
+  const { session, cachedBookings } = useUserStore();
 
   const [seats, setSeats] = useState<Seat[]>(initialSeats);
   const [hoveredSeat, setHoveredSeat] = useState<Seat | null>(null);
   const [activeClass, setActiveClass] = useState<SeatClass>(preferredClass);
+
+  // Find if user already has a seat on this flight (from cached bookings)
+  const myBookedSeatId = cachedBookings.find(
+    (b) => b.flight_id === flight.id && b.status !== "cancelled"
+  )?.seat_id ?? null;
 
   // Build seat map with status
   const getSeatStatus = useCallback(
     (seat: Seat): SeatWithStatus => {
       const isOptimistic = optimisticSeatId === seat.id;
       const isSelected = selectedSeat?.id === seat.id;
+      const isYours = myBookedSeatId === seat.id;
 
+      if (isYours) {
+        return { ...seat, status: "yours" };
+      }
       if (isSelected || isOptimistic) {
         return { ...seat, status: "selected" };
       }
@@ -55,7 +64,7 @@ export default function SeatMapClient({
       }
       return { ...seat, status: "available" };
     },
-    [optimisticSeatId, selectedSeat]
+    [optimisticSeatId, selectedSeat, myBookedSeatId]
   );
 
   // Supabase Realtime subscription
@@ -181,6 +190,7 @@ export default function SeatMapClient({
               {[
                 { color: "bg-green-500", label: "Available" },
                 { color: "bg-blue-500", label: "Selected" },
+                { color: "bg-amber-500", label: "Your Seat" },
                 { color: "bg-red-400", label: "Occupied" },
               ].map((item) => (
                 <div key={item.label} className="flex items-center gap-1.5">
@@ -232,9 +242,11 @@ export default function SeatMapClient({
                                   onMouseEnter={() => setHoveredSeat(seat!)}
                                   onMouseLeave={() => setHoveredSeat(null)}
                                   disabled={seatWithStatus.status === "occupied"}
-                                  title={`${seat!.seat_number} - ${getSeatClassLabel(seat!.class)} ${
-                                    seat!.extra_fee > 0
-                                      ? `(+${formatCurrency(seat!.extra_fee)})`
+                                  title={`${seat!.seat_number} - ${getSeatClassLabel(seat!.class)}${
+                                    seatWithStatus.status === "yours"
+                                      ? " (Your booked seat)"
+                                      : seat!.extra_fee > 0
+                                      ? ` (+${formatCurrency(seat!.extra_fee)})`
                                       : ""
                                   }`}
                                   className={`w-full aspect-square rounded text-xs font-medium transition-all ${
@@ -242,6 +254,8 @@ export default function SeatMapClient({
                                       ? "bg-green-500 hover:bg-green-600 text-white cursor-pointer"
                                       : seatWithStatus.status === "selected"
                                       ? "bg-blue-500 text-white ring-2 ring-blue-300 cursor-pointer"
+                                      : seatWithStatus.status === "yours"
+                                      ? "bg-amber-500 text-white ring-2 ring-amber-300 cursor-not-allowed"
                                       : "bg-red-400 text-white cursor-not-allowed opacity-70"
                                   }`}
                                 >
@@ -281,7 +295,13 @@ export default function SeatMapClient({
                     </p>
                   )}
                   <p className="text-xs text-gray-500 mt-1">
-                    {hoveredSeat.is_available ? "✓ Available" : "✗ Occupied"}
+                    {hoveredSeat.is_available
+                      ? myBookedSeatId === hoveredSeat.id
+                        ? "⭐ Your booked seat"
+                        : "✓ Available"
+                      : myBookedSeatId === hoveredSeat.id
+                      ? "⭐ Your booked seat"
+                      : "✗ Occupied"}
                   </p>
                 </div>
               </div>

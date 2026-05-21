@@ -13,7 +13,7 @@ export function createClient() {
           const resolvedCookies = await cookieStore;
           return resolvedCookies.getAll();
         },
-        async setAll(cookiesToSet: { name: string; value: string; options?: any }[]) {
+        async setAll(cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]) {
           try {
             const resolvedCookies = await cookieStore;
             cookiesToSet.forEach(({ name, value, options }) =>

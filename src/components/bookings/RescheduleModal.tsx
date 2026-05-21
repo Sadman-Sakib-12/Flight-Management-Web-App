@@ -28,6 +28,7 @@ export default function RescheduleModal({
   const [selectedNewSeat, setSelectedNewSeat] = useState<Seat | null>(null);
   const [loading, setLoading] = useState(false);
   const [fetchingFlights, setFetchingFlights] = useState(true);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   useEffect(() => {
     const fetchAlternatives = async () => {
@@ -242,7 +243,7 @@ export default function RescheduleModal({
               Cancel
             </button>
             <button
-              onClick={handleReschedule}
+              onClick={() => setShowConfirm(true)}
               disabled={!selectedNewFlight || !selectedNewSeat || loading}
               className="btn-primary flex-1"
             >
@@ -251,6 +252,47 @@ export default function RescheduleModal({
           </div>
         </div>
       </div>
+
+      {/* Reschedule confirmation dialog */}
+      {showConfirm && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/60 animate-fade-in">
+          <div className="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 animate-slide-up">
+            <div className="flex items-start gap-3 mb-4">
+              <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center shrink-0">
+                <RefreshCw className="w-5 h-5 text-orange-600" />
+              </div>
+              <div>
+                <h3 className="font-bold text-gray-900">Confirm Reschedule</h3>
+                <p className="text-sm text-gray-500 mt-1">
+                  Reschedule to <span className="font-semibold">{selectedNewFlight?.flight_no}</span> on{" "}
+                  {selectedNewFlight ? formatDateTime(selectedNewFlight.departs_at) : ""}?
+                  {selectedNewFlight && selectedNewFlight.base_price > (booking.flight?.base_price ?? 0) && (
+                    <span className="block text-orange-600 font-medium mt-1">
+                      Fee: +{formatCurrency(selectedNewFlight.base_price - (booking.flight?.base_price ?? 0))}
+                    </span>
+                  )}
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowConfirm(false)}
+                className="btn-secondary flex-1"
+                disabled={loading}
+              >
+                Go Back
+              </button>
+              <button
+                onClick={() => { setShowConfirm(false); handleReschedule(); }}
+                className="btn-primary flex-1"
+                disabled={loading}
+              >
+                {loading ? "Processing..." : "Yes, Reschedule"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
