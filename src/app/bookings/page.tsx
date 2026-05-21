@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import BookingsList from "@/components/bookings/BookingsList";
+import OfflineBookingsWrapper from "@/components/bookings/OfflineBookingsWrapper";
 import type { Booking } from "@/types";
 
 async function getUserBookings(): Promise<Booking[]> {
@@ -45,7 +46,10 @@ export default async function BookingsPage() {
         <p className="text-gray-500 mt-1">Manage your flight bookings</p>
       </div>
 
-      <BookingsList initialBookings={bookings} />
+      {/* OfflineBookingsWrapper shows cached data when offline */}
+      <OfflineBookingsWrapper>
+        <BookingsList initialBookings={bookings} />
+      </OfflineBookingsWrapper>
     </div>
   );
 }
