@@ -262,15 +262,22 @@ supabase/
 
 ---
 
-## 📸 Lighthouse PWA Score
+## 📸 Lighthouse Score (PageSpeed Insights — Desktop)
 
-> *(Run Lighthouse audit on the deployed Vercel URL and add screenshot here)*
+| Category | Score |
+|---|---|
+| ⚡ Performance | **99** |
+| ♿ Accessibility | 79 |
+| ✅ Best Practices | **100** |
+| 🔍 SEO | **100** |
+
+> Tested on: [https://flight-management-web-app-nu.vercel.app](https://flight-management-web-app-nu.vercel.app)
 >
-> Target: ≥ 90 PWA score. The app is configured with:
-> - Valid `manifest.json` with 192×192 and 512×512 icons
-> - Service Worker via `next-pwa` with `StaleWhileRevalidate` + `CacheFirst` strategies
-> - Offline fallback page at `/offline`
-> - `display: standalone` for installable PWA experience
+> Note: Chrome 112+ removed the PWA category from Lighthouse. PWA is validated via:
+> - ✅ Valid `manifest.json` with 192×192 and 512×512 icons
+> - ✅ Service Worker active (next-pwa)
+> - ✅ Install prompt banner visible on first visit
+> - ✅ Offline fallback page at `/offline`
 
 ---
 
