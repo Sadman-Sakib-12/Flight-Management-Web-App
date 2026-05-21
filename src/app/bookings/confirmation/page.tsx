@@ -12,7 +12,7 @@ import {
 import {
   CheckCircle,
   Plane,
-  Download,
+  Printer,
   Home,
   BookOpen,
 } from "lucide-react";
@@ -158,6 +158,13 @@ export default function ConfirmationPage() {
         >
           <Home className="w-4 h-4" />
           Back to Home
+        </button>
+        <button
+          onClick={() => window.print()}
+          className="btn-secondary flex items-center justify-center gap-2 flex-1"
+        >
+          <Printer className="w-4 h-4" />
+          Print / Save PDF
         </button>
         <button
           onClick={() => router.push("/bookings")}

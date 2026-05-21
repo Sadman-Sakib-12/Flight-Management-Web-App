@@ -77,3 +77,22 @@
 ::-webkit-scrollbar-thumb {
   @apply bg-gray-400 rounded-full;
 }
+
+/* Animations */
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.animate-slide-up { animation: slide-up 0.3s ease-out both; }
+.animate-fade-in  { animation: fade-in 0.2s ease-out both; }
+
+/* Print styles — for boarding pass / booking PDF */
+@media print {
+  nav, .btn-primary, .btn-secondary, button { display: none !important; }
+  body { background: white !important; }
+  .card { box-shadow: none !important; border: 1px solid #e5e7eb !important; }
+}

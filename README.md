@@ -66,16 +66,21 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 ### 4. Set up Supabase
 
 1. Create a new project at [supabase.com](https://supabase.com)
-2. Go to **SQL Editor** and run the migration files in order:
-   - `supabase/migrations/001_initial_schema.sql`
-   - `supabase/migrations/002_rls_policies.sql`
-   - `supabase/migrations/003_rpc_functions.sql`
-   - `supabase/migrations/004_seed_data.sql`
-3. Enable **Realtime** for the `seats` table in Supabase dashboard → Database → Replication
+2. Go to **SQL Editor** and run **only this one file** (it contains everything):
+   - `supabase/migrations/005_refresh_flight_dates.sql` ← **Run this**
+   
+   > This single file drops and recreates all tables, RLS policies, RPC functions, and seeds fresh flight data with future dates. The individual migration files (001–004) are kept for reference.
+
+3. Enable **Realtime** for the `seats` table:
+   - Supabase Dashboard → Database → Replication → enable `seats` table
 
 ### 5. Generate PWA Icons
 
-Place `icon-192x192.png` and `icon-512x512.png` in `/public/icons/`. See `/public/icons/generate-icons.md` for instructions.
+Icons are already pre-generated in `/public/icons/`. If you need to regenerate:
+
+```bash
+node scripts/generate-icons.js
+```
 
 ### 6. Run the development server
 
@@ -258,11 +263,26 @@ supabase/
 
 ## 📸 Lighthouse PWA Score
 
-> *(Add screenshot after running Lighthouse audit on the deployed Vercel URL)*
+> *(Run Lighthouse audit on the deployed Vercel URL and add screenshot here)*
+>
+> Target: ≥ 90 PWA score. The app is configured with:
+> - Valid `manifest.json` with 192×192 and 512×512 icons
+> - Service Worker via `next-pwa` with `StaleWhileRevalidate` + `CacheFirst` strategies
+> - Offline fallback page at `/offline`
+> - `display: standalone` for installable PWA experience
 
 ---
 
-## 📝 Commit History Guide
+## ✅ Submission Checklist
+
+- [x] Public GitHub repository with descriptive commit history
+- [x] `.env.example` with all Supabase environment variables listed
+- [x] Supabase migration SQL files in `/supabase/migrations`
+- [x] Seed script with flights, seats, and a test user account (credentials in README)
+- [x] README with local setup steps, Supabase project config, and Zustand store explanation
+- [ ] Deployed preview link (Vercel) — deploy with `npm run build && vercel`
+- [x] PWA icons generated (192×192 and 512×512 in `/public/icons/`)
+- [ ] Lighthouse PWA screenshot — run after Vercel deploy
 
 ```
 feat: initial Next.js 14 project setup with Tailwind and TypeScript
