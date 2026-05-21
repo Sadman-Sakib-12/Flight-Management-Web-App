@@ -236,7 +236,8 @@ supabase/
     ├── 001_initial_schema.sql
     ├── 002_rls_policies.sql
     ├── 003_rpc_functions.sql
-    └── 004_seed_data.sql
+    ├── 004_seed_data.sql
+    └── 005_refresh_flight_dates.sql  ← Run this to reset DB with fresh dates
 ```
 
 ---
