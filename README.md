@@ -4,8 +4,8 @@ A full-stack flight booking application built with Next.js 14, Supabase, Zustand
 
 ## 🚀 Live Demo
 
-> Deployed on Vercel: [https://flightx-app.vercel.app](https://ibb.co.com/FkNv7qPX) *(update after deploy)*
-
+> Deployed on Vercel: [https://flightx-app.vercel.app]
+> <a href="https://ibb.co.com/FkNv7qPX"><img src="https://i.ibb.co.com/4w9yNgQ2/Annotation-2026-05-22-042859.jpg" alt="Annotation-2026-05-22-042859" border="0"></a>
 ---
 
 ## 🧪 Test Account
